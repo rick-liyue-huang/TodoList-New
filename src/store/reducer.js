@@ -1,5 +1,5 @@
 
-import { CLICK_INPUT_VALUE, CHANGE_INPUT_VALUE, CLICK_BTN_ADD, CLICK_ITEM_DEL } from './actionTypes';
+import { CLICK_INPUT_VALUE, CHANGE_INPUT_VALUE, CLICK_BTN_ADD, CLICK_ITEM_DEL, GET_AXIOS_LIST } from './actionTypes';
 
 const defaultState = {
   inputValue: '123',
@@ -28,6 +28,11 @@ export default (state = defaultState, action) => {
   else if(CLICK_ITEM_DEL === action.type) {
     const newState = JSON.parse(JSON.stringify(state));
     newState.list.splice(action.index, 1);
+    return newState;
+  }
+  else if(GET_AXIOS_LIST === action.type) {
+    const newState = JSON.parse(JSON.stringify(state));
+    newState.list = action.data;
     return newState;
   }
   return state;
