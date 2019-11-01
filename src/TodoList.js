@@ -1,5 +1,6 @@
 
 import React, { Component, Fragment } from 'react';
+import axios from 'axios';
 import TodoItem from './TodoItem';
 import Test from './Test';
 import './style.css';
@@ -7,10 +8,11 @@ import './style.css';
 class TodoList extends Component {
 
   constructor(props) {
+    console.log('list - constructor');
     super(props);
     this.state = {
       inputValue: 'input',
-      list: ['js', 'css']
+      list: []
     };
     this.handleInputClick = this.handleInputClick.bind(this);
     this.handleInputChange = this.handleInputChange.bind(this);
@@ -25,6 +27,7 @@ class TodoList extends Component {
         <div>
           <label htmlFor='insert'>Input: </label>
           <input 
+            ref={input => this.input = input}
             id='insert'
             className='input'
             value={this.state.inputValue}
@@ -32,7 +35,7 @@ class TodoList extends Component {
             onChange={this.handleInputChange} />
           <button onClick={this.handleBtnAdd}>Add</button>
         </div>
-        <ul>
+        <ul ref={ul => this.ul = ul}>
           {
             this.handleGetList()
           }
@@ -43,11 +46,40 @@ class TodoList extends Component {
     )
   }
 
+  UNSAFE_componentWillMount() {
+    console.log('list - componentWillMount');
+  }
+
+  componentDidMount() {
+
+    axios.get('/api/todolist.json').then((res) => {
+      // console.log('success');
+      console.log(res.data);
+      this.setState(() => ({
+        list: [...res.data]
+      }))
+    }).catch(e => {
+      console.log(e);
+    })
+
+    console.log('list - componentDidMount');
+    console.log('------------------------------');
+  }
+
+  UNSAFE_componentWillUpdate() {
+    console.log('list - componentWillUpdate');
+  }
+
+  componentDidUpdate() {
+    console.log('list - componentDidUpdate');
+    console.log('------------------------------');
+  }
+
   handleGetList() {
     return this.state.list.map((item, index) => {
       return (
         <TodoItem 
-          key={index}
+          key={item}
           content={item}
           index={index}
           handleItemDel={this.handleItemDel} />
@@ -62,7 +94,8 @@ class TodoList extends Component {
   }
 
   handleInputChange(e) {
-    const value = e.target.value;
+    // const value = e.target.value;
+    const value = this.input.value;
     this.setState(() => ({
       inputValue: value
     }));
@@ -73,7 +106,7 @@ class TodoList extends Component {
       list: [...prevState.list, prevState.inputValue],
       inputValue: ''
     }), () => {
-      console.log(this.state.list.length);
+      console.log(this.ul.querySelectorAll('li').length);
     });
   }
 
