@@ -18,6 +18,10 @@ class TodoList extends Component {
       </ul>
     )
   }
+
+  componentDidMount() {
+    this.props.fetchTodos();
+  }
 }
 
 export default TodoList;
